@@ -12,22 +12,20 @@ const UserGrid = ({ users, winner }: UserGridProps) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-card-foreground mb-2">
-          All Participants
-        </h2>
-        <p className="text-muted-foreground">
-          {users.length} user{users.length !== 1 ? 's' : ''} in the lottery
-        </p>
+        <h3 className="text-lg font-semibold text-foreground">
+          All Participants ({users.length})
+        </h3>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      
+      <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-15 gap-2 max-h-40 overflow-y-auto">
         {users.map((user) => (
           <UserCard
             key={user.id}
             user={user}
             isWinner={winner?.id === user.id}
+            className="h-20 text-xs hover:scale-105 transition-transform duration-200"
           />
         ))}
       </div>

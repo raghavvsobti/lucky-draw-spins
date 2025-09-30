@@ -5,6 +5,7 @@ import LotteryCarousel from '@/components/LotteryCarousel';
 import WinnerAnnouncement from '@/components/WinnerAnnouncement';
 import CountdownTimer from '@/components/CountdownTimer';
 import UserGrid from '@/components/UserGrid';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
@@ -87,33 +88,52 @@ const Index = () => {
   }, [fetchUsers]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-6">
-          <div className="text-center space-y-2">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              🎰 Lottery Spinner
-            </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Every 2 hours, one lucky participant wins an iPhone 17 Pro! 
-              Winners are automatically removed from future drawings.
-            </p>
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm flex-shrink-0">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="text-center flex-1">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                🎰 Lottery Spinner
+              </h1>
+              <p className="text-muted-foreground text-sm">
+                Every 2 minutes, one lucky participant wins an iPhone 17 Pro!
+              </p>
+            </div>
+            <ThemeToggle />
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 space-y-12">
-        {/* Countdown Timer */}
-        <div className="max-w-md mx-auto">
+      <main className="flex-1 container mx-auto px-6 py-6 flex flex-col space-y-6 overflow-hidden">
+        {/* Top Row: Timer and Stats */}
+        <div className="flex items-center justify-between gap-6 flex-shrink-0">
           <CountdownTimer 
             timeUntilSpin={timeUntilSpin}
             formattedTime={formattedTime}
           />
+          
+          {lotteryState.users.length > 0 && (
+            <div className="flex gap-4">
+              <div className="bg-card px-4 py-2 rounded-lg border border-border text-center">
+                <div className="text-lg font-bold text-primary">{lotteryState.users.length}</div>
+                <div className="text-xs text-muted-foreground">Participants</div>
+              </div>
+              <div className="bg-card px-4 py-2 rounded-lg border border-border text-center">
+                <div className="text-lg font-bold text-secondary">iPhone 17 Pro</div>
+                <div className="text-xs text-muted-foreground">Prize</div>
+              </div>
+              <div className="bg-card px-4 py-2 rounded-lg border border-border text-center">
+                <div className="text-lg font-bold text-accent">2 Min</div>
+                <div className="text-xs text-muted-foreground">Interval</div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Lottery Carousel */}
-        <section className="max-w-6xl mx-auto">
+        {/* Main Lottery Carousel */}
+        <section className="flex-1 flex flex-col justify-center min-h-0">
           <LotteryCarousel
             users={lotteryState.users}
             onSpinComplete={handleSpinComplete}
@@ -122,33 +142,13 @@ const Index = () => {
           />
         </section>
 
-        {/* All Participants Grid */}
-        <section className="max-w-6xl mx-auto">
+        {/* Bottom Participants Grid */}
+        <section className="flex-shrink-0 max-h-48 overflow-hidden">
           <UserGrid 
             users={lotteryState.users}
             winner={lotteryState.winner}
           />
         </section>
-
-        {/* Stats */}
-        {lotteryState.users.length > 0 && (
-          <section className="text-center space-y-4 max-w-2xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-card p-4 rounded-lg border border-border">
-                <div className="text-2xl font-bold text-primary">{lotteryState.users.length}</div>
-                <div className="text-sm text-muted-foreground">Participants</div>
-              </div>
-              <div className="bg-card p-4 rounded-lg border border-border">
-                <div className="text-2xl font-bold text-secondary">iPhone 17 Pro</div>
-                <div className="text-sm text-muted-foreground">Prize</div>
-              </div>
-              <div className="bg-card p-4 rounded-lg border border-border">
-                <div className="text-2xl font-bold text-accent">2 Hours</div>
-                <div className="text-sm text-muted-foreground">Spin Interval</div>
-              </div>
-            </div>
-          </section>
-        )}
       </main>
 
       {/* Winner Announcement Modal */}

@@ -45,11 +45,11 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
   }, [isSpinning, users, onSpinComplete]);
 
   const getDisplayUsers = () => {
-    if (users.length <= 3) return users;
-    
+    const displayCount = Math.min(users.length, 7); // Show up to 7 cards
     const result = [];
-    for (let i = -1; i <= 1; i++) {
-      const index = (currentIndex + i + users.length) % users.length;
+    
+    for (let i = 0; i < displayCount; i++) {
+      const index = (currentIndex + i) % users.length;
       result.push(users[index]);
     }
     return result;
@@ -81,31 +81,45 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
           </p>
         </div>
 
-        <div className="flex justify-center items-center space-x-4 min-h-[200px]">
-          {getDisplayUsers().map((user, index) => {
-            const isCenter = index === Math.floor(getDisplayUsers().length / 2);
-            return (
-              <div
-                key={`${user.id}-${index}`}
-                className={cn(
-                  "transition-all duration-300",
-                  isCenter 
-                    ? "scale-110 z-10" 
-                    : "scale-90 opacity-50",
-                  isSpinning && "blur-sm"
-                )}
-              >
-                <UserCard
-                  user={user}
-                  isSpinning={isSpinning}
+        <div className="relative overflow-hidden mx-auto max-w-6xl">
+          <div 
+            className={cn(
+              "flex space-x-4 transition-transform duration-300 ease-out px-8",
+              isSpinning && "animate-pulse"
+            )}
+            style={{
+              transform: isSpinning ? `translateX(-${(currentIndex * 200)}px)` : 'translateX(0px)'
+            }}
+          >
+            {getDisplayUsers().map((user, index) => {
+              const isCenter = index === Math.floor(getDisplayUsers().length / 2);
+              return (
+                <div
+                  key={`${user.id}-${index}`}
                   className={cn(
-                    "w-48",
-                    isCenter && "ring-2 ring-primary shadow-lg shadow-primary/25"
+                    "flex-shrink-0 transition-all duration-300",
+                    isCenter 
+                      ? "scale-110 z-10" 
+                      : "scale-95 opacity-70",
+                    isSpinning && "blur-sm"
                   )}
-                />
-              </div>
-            );
-          })}
+                >
+                  <UserCard
+                    user={user}
+                    isSpinning={isSpinning}
+                    className={cn(
+                      "w-48",
+                      isCenter && "ring-2 ring-primary shadow-lg shadow-primary/25"
+                    )}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          
+          {/* Fade edges */}
+          <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent pointer-events-none" />
         </div>
 
         {isSpinning && (

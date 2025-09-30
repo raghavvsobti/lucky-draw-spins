@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 
+// Configurable spin interval (in minutes)
+const SPIN_INTERVAL_MINUTES = 2;
+
 export const useLotteryTimer = (onSpin: () => void) => {
   const [timeUntilSpin, setTimeUntilSpin] = useState<number>(0);
   const [nextSpinTime, setNextSpinTime] = useState<Date | null>(null);
 
   const getNextSpinTime = useCallback(() => {
     const now = new Date();
-    const next = new Date(now.getTime() + 2 * 60 * 60 * 1000); // 2 hours from now
+    const next = new Date(now.getTime() + SPIN_INTERVAL_MINUTES * 60 * 1000);
     return next;
   }, []);
 
