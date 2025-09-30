@@ -80,10 +80,51 @@ export default {
             height: "0",
           },
         },
+        "slot-spin": {
+          "0%": {
+            transform: "translateY(0%) rotateX(0deg)",
+          },
+          "50%": {
+            transform: "translateY(-200%) rotateX(180deg)",
+          },
+          "100%": {
+            transform: "translateY(0%) rotateX(360deg)",
+          },
+        },
+        "winner-glow": {
+          "0%, 100%": {
+            boxShadow: "0 0 20px hsl(var(--lottery-primary) / 0.5)",
+          },
+          "50%": {
+            boxShadow: "0 0 40px hsl(var(--lottery-primary) / 0.8), 0 0 60px hsl(var(--lottery-primary) / 0.4)",
+          },
+        },
+        "float": {
+          "0%, 100%": {
+            transform: "translateY(0px)",
+          },
+          "50%": {
+            transform: "translateY(-10px)",
+          },
+        },
+        "scale-in": {
+          "0%": {
+            transform: "scale(0.95)",
+            opacity: "0",
+          },
+          "100%": {
+            transform: "scale(1)",
+            opacity: "1",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "slot-spin": "slot-spin 0.8s ease-in-out",
+        "winner-glow": "winner-glow 1s ease-in-out infinite",
+        "float": "float 3s ease-in-out infinite",
+        "scale-in": "scale-in 0.3s ease-out",
       },
     },
   },
