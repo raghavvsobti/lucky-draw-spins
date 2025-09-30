@@ -3,6 +3,7 @@ import { User } from '@/types/user';
 import UserCard from './UserCard';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useCasinoSounds } from '@/hooks/useCasinoSounds';
 
 interface LotteryCarouselProps {
   users: User[];
@@ -14,10 +15,15 @@ interface LotteryCarouselProps {
 const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: LotteryCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [spinCount, setSpinCount] = useState(0);
+  const { playSpinSound, stopSpinSound } = useCasinoSounds();
 
   useEffect(() => {
-    if (!isSpinning) return;
+    if (!isSpinning) {
+      stopSpinSound();
+      return;
+    }
 
+    playSpinSound();
     const maxSpins = 15 + Math.floor(Math.random() * 10); // 15-25 spins
     let count = 0;
 
@@ -35,14 +41,18 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
         
         // Delay to show the final result
         setTimeout(() => {
+          stopSpinSound();
           onSpinComplete(users[winnerIndex]);
           setSpinCount(0);
         }, 500);
       }
     }, 100 + Math.floor(count / 3) * 50); // Gradually slow down
 
-    return () => clearInterval(spinInterval);
-  }, [isSpinning, users, onSpinComplete]);
+    return () => {
+      clearInterval(spinInterval);
+      stopSpinSound();
+    };
+  }, [isSpinning, users, onSpinComplete, playSpinSound, stopSpinSound]);
 
   const getDisplayUsers = () => {
     const displayCount = Math.min(users.length, 7); // Show up to 7 cards
@@ -57,8 +67,8 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
 
   if (users.length === 0) {
     return (
-      <div className="text-center py-12">
-        <h2 className="text-2xl font-bold text-muted-foreground mb-4">
+      <div className="text-center py-8">
+        <h2 className="text-xl font-bold text-muted-foreground mb-2">
           No more participants!
         </h2>
         <p className="text-muted-foreground">
@@ -69,14 +79,14 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* Carousel Display */}
       <div className="relative overflow-hidden">
-        <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+        <div className="text-center mb-4">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             {isSpinning ? 'Spinning...' : 'Next Lucky Winner'}
           </h2>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm">
             {users.length} participant{users.length !== 1 ? 's' : ''} remaining
           </p>
         </div>
@@ -124,7 +134,7 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
 
         {isSpinning && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="text-6xl opacity-20 animate-spin">🎰</div>
+            <div className="text-4xl opacity-20 animate-spin">⟳</div>
           </div>
         )}
       </div>
@@ -149,7 +159,7 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
               Spinning...
             </>
           ) : (
-            '🎰 Spin Now!'
+            '⚡ Spin Now!'
           )}
         </Button>
       </div>

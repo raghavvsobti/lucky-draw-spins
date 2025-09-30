@@ -56,7 +56,7 @@ const Index = () => {
     setLotteryState(prev => ({ ...prev, isSpinning: true, winner: null }));
     
     toast({
-      title: "🎰 Lottery Started!",
+      title: "⚡ Lottery Started!",
       description: "Spinning the wheel to find our lucky winner...",
     });
   }, [lotteryState.users.length, lotteryState.isSpinning, toast]);
@@ -94,10 +94,10 @@ const Index = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="text-center flex-1">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                🎰 Lottery Spinner
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                ⚡ Lottery Spinner
               </h1>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-xs">
                 Every 2 minutes, one lucky participant wins an iPhone 17 Pro!
               </p>
             </div>
@@ -106,26 +106,26 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-6 py-6 flex flex-col space-y-6 overflow-hidden">
+      <main className="flex-1 container mx-auto px-4 py-4 flex flex-col space-y-4 overflow-hidden">
         {/* Top Row: Timer and Stats */}
-        <div className="flex items-center justify-between gap-6 flex-shrink-0">
+        <div className="flex items-center justify-between gap-4 flex-shrink-0">
           <CountdownTimer 
             timeUntilSpin={timeUntilSpin}
             formattedTime={formattedTime}
           />
           
           {lotteryState.users.length > 0 && (
-            <div className="flex gap-4">
-              <div className="bg-card px-4 py-2 rounded-lg border border-border text-center">
-                <div className="text-lg font-bold text-primary">{lotteryState.users.length}</div>
+            <div className="flex gap-2">
+              <div className="bg-card px-3 py-2 rounded-lg border border-border text-center">
+                <div className="text-sm font-bold text-primary">{lotteryState.users.length}</div>
                 <div className="text-xs text-muted-foreground">Participants</div>
               </div>
-              <div className="bg-card px-4 py-2 rounded-lg border border-border text-center">
-                <div className="text-lg font-bold text-secondary">iPhone 17 Pro</div>
+              <div className="bg-card px-3 py-2 rounded-lg border border-border text-center">
+                <div className="text-sm font-bold text-secondary">iPhone 17 Pro</div>
                 <div className="text-xs text-muted-foreground">Prize</div>
               </div>
-              <div className="bg-card px-4 py-2 rounded-lg border border-border text-center">
-                <div className="text-lg font-bold text-accent">2 Min</div>
+              <div className="bg-card px-3 py-2 rounded-lg border border-border text-center">
+                <div className="text-sm font-bold text-accent">2 Min</div>
                 <div className="text-xs text-muted-foreground">Interval</div>
               </div>
             </div>
@@ -143,7 +143,7 @@ const Index = () => {
         </section>
 
         {/* Bottom Participants Grid */}
-        <section className="flex-shrink-0 max-h-48 overflow-hidden">
+        <section className="flex-shrink-0 max-h-36 overflow-hidden">
           <UserGrid 
             users={lotteryState.users}
             winner={lotteryState.winner}

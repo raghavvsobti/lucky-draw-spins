@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import confetti from 'canvas-confetti';
 import { User } from '@/types/user';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useCasinoSounds } from '@/hooks/useCasinoSounds';
 import { cn } from '@/lib/utils';
+import confetti from 'canvas-confetti';
 
 interface WinnerAnnouncementProps {
   winner: User;
@@ -11,7 +12,10 @@ interface WinnerAnnouncementProps {
 }
 
 const WinnerAnnouncement = ({ winner, onClose }: WinnerAnnouncementProps) => {
+  const { playWinnerSound } = useCasinoSounds();
   useEffect(() => {
+    playWinnerSound();
+    
     // Trigger confetti
     const duration = 3000;
     const animationEnd = Date.now() + duration;
@@ -70,7 +74,7 @@ const WinnerAnnouncement = ({ winner, onClose }: WinnerAnnouncementProps) => {
     playWinSound();
 
     return () => clearInterval(confettiInterval);
-  }, []);
+  }, [playWinnerSound]);
 
   const initials = `${winner.name.first.charAt(0)}${winner.name.last.charAt(0)}`.toUpperCase();
   const fullName = `${winner.name.first} ${winner.name.last}`;
