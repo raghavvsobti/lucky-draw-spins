@@ -21,12 +21,12 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
   useEffect(() => {
     if (users.length === 0) return;
 
-    // Continuous background rotation (faster pace)
+    // Fast continuous rotation
     backgroundIntervalRef.current = setInterval(() => {
       if (!isSpinning) {
         setCurrentIndex(prev => (prev + 1) % users.length);
       }
-    }, 800);
+    }, 300);
 
     return () => {
       if (backgroundIntervalRef.current) {
@@ -76,12 +76,13 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
   }, [isSpinning, users, onSpinComplete, playSpinSound, stopSpinSound]);
 
   const getDisplayUsers = () => {
-    const displayCount = Math.min(users.length, 7); // Show up to 7 cards
+    // Create seamless loop by tripling the users array
+    const displayCount = Math.min(users.length * 3, 21); // Show up to 21 cards for seamless scroll
     const result = [];
     
     for (let i = 0; i < displayCount; i++) {
       const index = (currentIndex + i) % users.length;
-      result.push(users[index]);
+      result.push({ ...users[index], loopKey: i });
     }
     return result;
   };
@@ -115,37 +116,28 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
         <div className="relative overflow-hidden mx-auto max-w-6xl">
           <div 
             className={cn(
-              "flex space-x-4 transition-transform ease-linear px-8",
-              isSpinning ? "duration-100" : "duration-[800ms]"
+              "flex space-x-4 transition-transform ease-linear",
+              isSpinning ? "duration-100" : "duration-[300ms]"
             )}
             style={{
-              transform: `translateX(-${(currentIndex * 200)}px)`
+              transform: `translateX(-${(currentIndex * 220)}px)`
             }}
           >
-            {getDisplayUsers().map((user, index) => {
-              const isCenter = index === Math.floor(getDisplayUsers().length / 2);
-              return (
-                <div
-                  key={`${user.id}-${index}`}
-                  className={cn(
-                    "flex-shrink-0 transition-all duration-300",
-                    isCenter 
-                      ? "scale-110 z-10" 
-                      : "scale-95 opacity-70",
-                    isSpinning && "blur-sm"
-                  )}
-                >
-                  <UserCard
-                    user={user}
-                    isSpinning={isSpinning}
-                    className={cn(
-                      "w-48",
-                      isCenter && "ring-2 ring-primary shadow-lg shadow-primary/25"
-                    )}
-                  />
-                </div>
-              );
-            })}
+            {getDisplayUsers().map((user, index) => (
+              <div
+                key={`${user.id}-${user.loopKey}-${index}`}
+                className={cn(
+                  "flex-shrink-0",
+                  isSpinning && "blur-sm"
+                )}
+              >
+                <UserCard
+                  user={user}
+                  isSpinning={isSpinning}
+                  className="w-52 h-64"
+                />
+              </div>
+            ))}
           </div>
           
           {/* Fade edges */}

@@ -22,7 +22,7 @@ const UserCard = ({ user, isWinner, isSpinning, className }: UserCardProps) => {
       isSpinning && "animate-slot-spin",
       className
     )}>
-      <div className="p-6 text-center space-y-4">
+      <div className="p-4 text-center space-y-3 flex flex-col h-full">
         {/* Avatar with initials */}
         <div className={cn(
           "mx-auto w-16 h-16 rounded-full flex items-center justify-center",
@@ -35,15 +35,15 @@ const UserCard = ({ user, isWinner, isSpinning, className }: UserCardProps) => {
         </div>
         
         {/* User name */}
-        <div className="space-y-1">
+        <div className="space-y-1 flex-1 flex flex-col justify-center">
           <h3 className={cn(
-            "font-semibold text-card-foreground transition-colors",
-            "group-hover:text-primary",
+            "font-semibold text-card-foreground transition-colors text-sm",
+            "group-hover:text-primary break-words line-clamp-2",
             isWinner && "text-primary font-bold"
           )}>
             {fullName}
           </h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground break-words line-clamp-2">
             {user.email}
           </p>
         </div>
