@@ -6,6 +6,7 @@ import LotteryCarousel from '@/components/LotteryCarousel';
 import WinnerAnnouncement from '@/components/WinnerAnnouncement';
 import CountdownTimer from '@/components/CountdownTimer';
 import WinnersList from '@/components/WinnersList';
+import PrizesDisplay from '@/components/PrizesDisplay';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
@@ -135,6 +136,8 @@ const Index = () => {
             formattedTime={formattedTime}
             onClick={handleSpin}
           />
+
+          <PrizesDisplay />
 
           <WinnersList winners={recentWinners} />
         </div>
