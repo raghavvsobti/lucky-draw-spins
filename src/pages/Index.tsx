@@ -20,7 +20,11 @@ const Index = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [winner, setWinner] = useState<User | null>(null);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
-  const [recentWinners, setRecentWinners] = useState<Array<{ id: string; name: string; prize: string }>>([]);
+  const [recentWinners, setRecentWinners] = useState<Array<{ id: string; name: string; prize: string }>>([
+    { id: '1', name: 'John Smith', prize: 'iPhone' },
+    { id: '2', name: 'Sarah Johnson', prize: 'AirPods' },
+    { id: '3', name: 'Mike Wilson', prize: 'Apple Watch' }
+  ]);
 
   const prizes = ['iPhone', 'AirPods', 'Apple Watch'];
 
