@@ -5,6 +5,7 @@ import { useLotteryTimer } from '@/hooks/useLotteryTimer';
 import LotteryCarousel from '@/components/LotteryCarousel';
 import WinnerAnnouncement from '@/components/WinnerAnnouncement';
 import CountdownTimer from '@/components/CountdownTimer';
+import WinnersList from '@/components/WinnersList';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
@@ -19,6 +20,9 @@ const Index = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [winner, setWinner] = useState<User | null>(null);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
+  const [recentWinners, setRecentWinners] = useState<Array<{ id: string; name: string; prize: string }>>([]);
+
+  const prizes = ['iPhone', 'AirPods', 'Apple Watch'];
 
   // Fetch users from RandomUser API
   const fetchUsers = useCallback(async () => {
@@ -67,17 +71,25 @@ const Index = () => {
 
   // Handle spin completion
   const handleSpinComplete = useCallback((selectedWinner: User) => {
+    const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+    
     setIsSpinning(false);
     setWinner(selectedWinner);
     setUsers(prev => prev.filter(user => user.id !== selectedWinner.id));
     setShowWinnerModal(true);
+
+    // Add to recent winners (keep last 5)
+    setRecentWinners(prev => [
+      { id: selectedWinner.id, name: `${selectedWinner.name.first} ${selectedWinner.name.last}`, prize: randomPrize },
+      ...prev
+    ].slice(0, 5));
 
     // Auto-close winner modal after 120 seconds
     setTimeout(() => {
       setShowWinnerModal(false);
       setWinner(null);
     }, 120000);
-  }, []);
+  }, [prizes]);
 
   // Timer for automatic spins
   const { timeUntilSpin, formattedTime, resetTimer } = useLotteryTimer(handleSpin);
@@ -120,28 +132,7 @@ const Index = () => {
             onClick={handleSpin}
           />
 
-          {/* <div className="flex gap-2">
-            {users.length > 0 && (
-              <>
-                <div className="bg-card px-3 py-2 rounded-lg border border-border text-center">
-                  <div className="text-sm font-bold text-primary">{users.length}</div>
-                  <div className="text-xs text-muted-foreground">Current Participants Count</div>
-                </div>
-                <div className="bg-card px-3 py-2 rounded-lg border border-border text-center">
-                  <div className="text-sm font-bold text-primary">iPhone 17 Pro</div>
-                  <div className="text-xs text-muted-foreground">Next Prize</div>
-                </div>
-                <div className="bg-card px-3 py-2 rounded-lg border border-border text-center">
-                  <div className="text-sm font-bold text-primary">2 Min</div>
-                  <div className="text-xs text-muted-foreground">Interval</div>
-                </div>
-              </>
-            )}
-          </div> */}
-
-          <div>
-
-          </div>
+          <WinnersList winners={recentWinners} />
         </div>
 
         {/* Main Lottery Carousel */}
