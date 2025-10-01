@@ -18,11 +18,11 @@ const WinnerAnnouncement = ({ winner }: WinnerAnnouncementProps) => {
     if (hours === 12) {
       setPrize("iPad");
     } else if (hours === 14) {
-      setPrize("Airpods");
+      setPrize("Airpods Pro");
     } else if (hours === 16) {
       setPrize("Apple Watch");
     } else if (hours === 18) {
-      setPrize("Airpods");
+      setPrize("Airpods Pro");
     }
   }, [])
 
@@ -139,7 +139,7 @@ const WinnerAnnouncement = ({ winner }: WinnerAnnouncementProps) => {
             <div className="text-lg font-bold text-card-foreground">
               🎁 You've won an
             </div>
-            <div className="text-2xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <div className="text-2xl ml-4 text-center font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               {prize || "Exclusive Prize"}
             </div>
           </div>

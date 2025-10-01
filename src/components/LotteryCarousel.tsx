@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { User } from '@/types/user';
 import UserCard from './UserCard';
 import { cn } from '@/lib/utils';
@@ -60,7 +60,7 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
       <div className="relative overflow-hidden">
         <div className="text-center mb-3">
           <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            {isSpinning ? 'Spinning...' : `Registered Participants (${users.length})`}
+            {isSpinning ? 'Drawing...' : `Registered Participants (${users.length})`}
           </h2>
           {/* <p className="text-muted-foreground text-sm">
              participant{users.length !== 1 ? 's' : ''}

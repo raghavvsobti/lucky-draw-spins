@@ -12,6 +12,8 @@ import lmLogo from "@/assets/landmark-logo.png";
 import lmBlack from "@/assets/lm-black.png";
 import lmWhite from "@/assets/lm-white.png";
 import { useTheme } from 'next-themes';
+import PrizeDisplay from '@/components/prizeDisplay';
+import WinnersList from '@/components/WinnersList';
 
 const Index = () => {
   const { toast } = useToast();
@@ -19,6 +21,11 @@ const Index = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [winner, setWinner] = useState<User | null>(null);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
+  const [recentWinners, setRecentWinners] = useState<Array<{ id: string; name: string; prize: string }>>([
+    { id: '1', name: 'John Smith', prize: 'iPhone' },
+    { id: '2', name: 'Sarah Johnson', prize: 'AirPods' },
+    { id: '3', name: 'Mike Wilson', prize: 'Apple Watch' }
+  ]);
 
   // Fetch users from RandomUser API
   const fetchUsers = useCallback(async () => {
@@ -90,7 +97,7 @@ const Index = () => {
   const { theme } = useTheme();
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="h-screen bg-background flex flex-col overflow-hidden relative">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm flex-shrink-0">
         <div className="container mx-auto px-6 py-4">
@@ -113,39 +120,19 @@ const Index = () => {
 
       <main className="flex-1 container mx-auto px-4 py-3 flex flex-col space-y-3 overflow-hidden">
         {/* Top Row: Timer and Stats */}
-        <div className="flex items-center justify-between gap-4 flex-shrink-0">
+        <div className="flex items-center justify-center gap-2 flex-shrink-0 ml-10">
           <CountdownTimer
             timeUntilSpin={timeUntilSpin}
             formattedTime={formattedTime}
             onClick={handleSpin}
           />
 
-          {/* <div className="flex gap-2">
-            {users.length > 0 && (
-              <>
-                <div className="bg-card px-3 py-2 rounded-lg border border-border text-center">
-                  <div className="text-sm font-bold text-primary">{users.length}</div>
-                  <div className="text-xs text-muted-foreground">Current Participants Count</div>
-                </div>
-                <div className="bg-card px-3 py-2 rounded-lg border border-border text-center">
-                  <div className="text-sm font-bold text-primary">iPhone 17 Pro</div>
-                  <div className="text-xs text-muted-foreground">Next Prize</div>
-                </div>
-                <div className="bg-card px-3 py-2 rounded-lg border border-border text-center">
-                  <div className="text-sm font-bold text-primary">2 Min</div>
-                  <div className="text-xs text-muted-foreground">Interval</div>
-                </div>
-              </>
-            )}
-          </div> */}
-
-          <div>
-
-          </div>
+          <PrizeDisplay />
+          <WinnersList winners={recentWinners} />
         </div>
 
         {/* Main Lottery Carousel */}
-        <section className="py-20 flex flex-col justify-center min-h-0">
+        <section className="py-20 pt-10 flex flex-col justify-center min-h-0">
           <LotteryCarousel
             users={users}
             onSpinComplete={handleSpinComplete}
@@ -174,11 +161,9 @@ const Index = () => {
       </main>
 
       {/* Winner Announcement Modal */}
-      {
-        showWinnerModal && winner && (
-          <WinnerAnnouncement winner={winner} />
-        )
-      }
+      {showWinnerModal && winner && (
+        <WinnerAnnouncement winner={winner} />
+      )}
     </div >
   );
 };
