@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { User } from '@/types/user';
 import UserCard from './UserCard';
 import { cn } from '@/lib/utils';
@@ -11,29 +12,9 @@ interface LotteryCarouselProps {
 }
 
 const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [spinCount, setSpinCount] = useState(0);
   const { playSpinSound, stopSpinSound } = useCasinoSounds();
-  const backgroundIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const spinIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Continuous background rotation
-  useEffect(() => {
-    if (users.length === 0) return;
-
-    // Fast continuous rotation
-    backgroundIntervalRef.current = setInterval(() => {
-      if (!isSpinning) {
-        setCurrentIndex(prev => (prev + 1) % users.length);
-      }
-    }, 300);
-
-    return () => {
-      if (backgroundIntervalRef.current) {
-        clearInterval(backgroundIntervalRef.current);
-      }
-    };
-  }, [users.length, isSpinning]);
 
   // Fast spin animation when triggered
   useEffect(() => {
@@ -43,49 +24,22 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
     }
 
     playSpinSound();
-    const maxSpins = 15 + Math.floor(Math.random() * 10); // 15-25 spins
-    let count = 0;
-
-    spinIntervalRef.current = setInterval(() => {
-      count++;
-      setSpinCount(count);
-      
-      if (count <= maxSpins) {
-        setCurrentIndex(prev => (prev + 1) % users.length);
-      } else {
-        if (spinIntervalRef.current) clearInterval(spinIntervalRef.current);
-        // Select random winner
-        const winnerIndex = Math.floor(Math.random() * users.length);
-        setCurrentIndex(winnerIndex);
-        
-        // Delay to show the final result
-        setTimeout(() => {
-          stopSpinSound();
-          onSpinComplete(users[winnerIndex]);
-          setSpinCount(0);
-        }, 500);
-      }
-    }, 100 + Math.floor(count / 3) * 50); // Gradually slow down
+    const spinDuration = 3000 + Math.random() * 2000; // 3-5 seconds
+    
+    const spinTimeout = setTimeout(() => {
+      stopSpinSound();
+      const winnerIndex = Math.floor(Math.random() * users.length);
+      onSpinComplete(users[winnerIndex]);
+    }, spinDuration);
 
     return () => {
-      if (spinIntervalRef.current) {
-        clearInterval(spinIntervalRef.current);
-      }
+      clearTimeout(spinTimeout);
       stopSpinSound();
     };
   }, [isSpinning, users, onSpinComplete, playSpinSound, stopSpinSound]);
 
-  const getDisplayUsers = () => {
-    // Create seamless loop by tripling the users array
-    const displayCount = Math.min(users.length * 3, 21); // Show up to 21 cards for seamless scroll
-    const result = [];
-    
-    for (let i = 0; i < displayCount; i++) {
-      const index = (currentIndex + i) % users.length;
-      result.push({ ...users[index], loopKey: i });
-    }
-    return result;
-  };
+  // Create duplicated array for infinite scroll effect
+  const duplicatedUsers = [...users, ...users, ...users];
 
   if (users.length === 0) {
     return (
@@ -114,18 +68,23 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
         </div>
 
         <div className="relative overflow-hidden mx-auto max-w-6xl">
-          <div 
-            className={cn(
-              "flex space-x-4 transition-transform ease-linear",
-              isSpinning ? "duration-100" : "duration-[300ms]"
-            )}
-            style={{
-              transform: `translateX(-${(currentIndex * 220)}px)`
+          <motion.div 
+            className="flex space-x-4"
+            animate={{
+              x: isSpinning ? [0, -users.length * 220] : [0, -users.length * 220]
+            }}
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: isSpinning ? users.length * 0.1 : users.length * 2,
+                ease: "linear"
+              }
             }}
           >
-            {getDisplayUsers().map((user, index) => (
+            {duplicatedUsers.map((user, index) => (
               <div
-                key={`${user.id}-${user.loopKey}-${index}`}
+                key={`${user.id}-${index}`}
                 className={cn(
                   "flex-shrink-0",
                   isSpinning && "blur-sm"
@@ -138,7 +97,7 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
                 />
               </div>
             ))}
-          </div>
+          </motion.div>
           
           {/* Fade edges */}
           <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent pointer-events-none" />
