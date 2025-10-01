@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { User } from '@/types/user';
 import { Card } from '@/components/ui/card';
 import { useCasinoSounds } from '@/hooks/useCasinoSounds';
@@ -11,10 +11,25 @@ interface WinnerAnnouncementProps {
 
 const WinnerAnnouncement = ({ winner }: WinnerAnnouncementProps) => {
   const { playWinnerSound } = useCasinoSounds();
-  
+  const [prize, setPrize] = useState<string>("");
+
+  useEffect(() => {
+    const hours = new Date()?.getHours();
+    if (hours === 12) {
+      setPrize("iPad");
+    } else if (hours === 14) {
+      setPrize("Airpods");
+    } else if (hours === 16) {
+      setPrize("Apple Watch");
+    } else if (hours === 18) {
+      setPrize("Airpods");
+    }
+  }, [])
+
+
   useEffect(() => {
     playWinnerSound();
-    
+
     // Trigger confetti
     const duration = 3000;
     const animationEnd = Date.now() + duration;
@@ -52,6 +67,7 @@ const WinnerAnnouncement = ({ winner }: WinnerAnnouncementProps) => {
 
     // Play sound effect (using Web Audio API)
     const playWinSound = () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
@@ -110,9 +126,9 @@ const WinnerAnnouncement = ({ winner }: WinnerAnnouncementProps) => {
             <h3 className="text-xl font-semibold text-primary">
               {fullName}
             </h3>
-            <p className="text-muted-foreground">
+            {/* <p className="text-muted-foreground">
               {winner.email}
-            </p>
+            </p> */}
           </div>
 
           {/* Prize announcement */}
@@ -123,8 +139,8 @@ const WinnerAnnouncement = ({ winner }: WinnerAnnouncementProps) => {
             <div className="text-lg font-bold text-card-foreground">
               🎁 You've won an
             </div>
-          <div className="text-2xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              iPhone 17 Pro
+            <div className="text-2xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              {prize || "Exclusive Prize"}
             </div>
           </div>
         </div>

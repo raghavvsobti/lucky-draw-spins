@@ -32,7 +32,7 @@ const UserCard = ({ user, isWinner, isSpinning, className }: UserCardProps) => {
         )}>
           {initials}
         </div>
-        
+
         {/* User name */}
         <div className="space-y-1">
           <h3 className={cn(
@@ -42,9 +42,9 @@ const UserCard = ({ user, isWinner, isSpinning, className }: UserCardProps) => {
           )}>
             {fullName}
           </h3>
-          <p className="text-sm text-muted-foreground truncate">
+          {/* <p className="text-sm text-muted-foreground truncate">
             {user.email}
-          </p>
+          </p> */}
         </div>
 
         {isWinner && (

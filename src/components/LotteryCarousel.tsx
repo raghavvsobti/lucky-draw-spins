@@ -25,7 +25,7 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
 
     playSpinSound();
     const spinDuration = 3000 + Math.random() * 2000; // 3-5 seconds
-    
+
     const spinTimeout = setTimeout(() => {
       stopSpinSound();
       const winnerIndex = Math.floor(Math.random() * users.length);
@@ -55,20 +55,20 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* Carousel Display */}
       <div className="relative overflow-hidden">
         <div className="text-center mb-3">
           <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            {isSpinning ? 'Spinning...' : 'All Participants'}
+            {isSpinning ? 'Spinning...' : `Registered Participants (${users.length})`}
           </h2>
-          <p className="text-muted-foreground text-sm">
-            {users.length} participant{users.length !== 1 ? 's' : ''} remaining
-          </p>
+          {/* <p className="text-muted-foreground text-sm">
+             participant{users.length !== 1 ? 's' : ''}
+          </p> */}
         </div>
 
-        <div className="relative overflow-hidden mx-auto max-w-6xl">
-          <motion.div 
+        <div className="relative overflow-hidden mx-auto max-w-8xl">
+          <motion.div
             className="flex space-x-4"
             animate={{
               x: isSpinning ? [0, -users.length * 220] : [0, -users.length * 220]
@@ -93,12 +93,12 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
                 <UserCard
                   user={user}
                   isSpinning={isSpinning}
-                  className="w-52 h-64"
+                  className="w-52 h-fit"
                 />
               </div>
             ))}
           </motion.div>
-          
+
           {/* Fade edges */}
           <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent pointer-events-none" />
           <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent pointer-events-none" />

@@ -11,7 +11,7 @@ const CountdownTimer = ({ timeUntilSpin, formattedTime, onClick }: CountdownTime
   const isUrgent = timeUntilSpin < 5 * 60 * 1000; // Less than 5 minutes
 
   return (
-    <Card 
+    <Card
       onClick={onClick}
       className={cn(
         "p-6 text-center transition-all duration-300",
@@ -23,7 +23,7 @@ const CountdownTimer = ({ timeUntilSpin, formattedTime, onClick }: CountdownTime
     >
       <div className="space-y-2">
         <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-          {onClick ? 'Click to Spin or Wait' : 'Next Auto-Spin In'}
+          {onClick ? 'Next Draw In' : 'Next Draw In'}
         </h3>
         <div className={cn(
           "text-3xl font-mono font-bold",
@@ -33,7 +33,7 @@ const CountdownTimer = ({ timeUntilSpin, formattedTime, onClick }: CountdownTime
           {formattedTime}
         </div>
         <p className="text-xs text-muted-foreground">
-          {isUrgent ? '🔥 Spin incoming!' : 'Automatic lottery every 2 minutes'}
+          {isUrgent ? '🔥 Draw incoming!' : ''}
         </p>
       </div>
     </Card>
