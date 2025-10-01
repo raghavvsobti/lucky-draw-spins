@@ -127,10 +127,6 @@ const WinnerAnnouncement = ({ winner }: WinnerAnnouncementProps) => {
               iPhone 17 Pro
             </div>
           </div>
-
-          <p className="text-xs text-muted-foreground italic">
-            This dialog will close automatically...
-          </p>
         </div>
       </Card>
     </div>

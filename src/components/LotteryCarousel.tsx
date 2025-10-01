@@ -21,12 +21,12 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
   useEffect(() => {
     if (users.length === 0) return;
 
-    // Slow background rotation (every 2 seconds)
+    // Continuous background rotation (faster pace)
     backgroundIntervalRef.current = setInterval(() => {
       if (!isSpinning) {
         setCurrentIndex(prev => (prev + 1) % users.length);
       }
-    }, 2000);
+    }, 800);
 
     return () => {
       if (backgroundIntervalRef.current) {
@@ -116,7 +116,7 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
           <div 
             className={cn(
               "flex space-x-4 transition-transform ease-linear px-8",
-              isSpinning ? "duration-100" : "duration-[2000ms]"
+              isSpinning ? "duration-100" : "duration-[800ms]"
             )}
             style={{
               transform: `translateX(-${(currentIndex * 200)}px)`
