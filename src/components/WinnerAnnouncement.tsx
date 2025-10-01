@@ -1,18 +1,17 @@
 import { useEffect } from 'react';
 import { User } from '@/types/user';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { useCasinoSounds } from '@/hooks/useCasinoSounds';
 import { cn } from '@/lib/utils';
 import confetti from 'canvas-confetti';
 
 interface WinnerAnnouncementProps {
   winner: User;
-  onClose: () => void;
 }
 
-const WinnerAnnouncement = ({ winner, onClose }: WinnerAnnouncementProps) => {
+const WinnerAnnouncement = ({ winner }: WinnerAnnouncementProps) => {
   const { playWinnerSound } = useCasinoSounds();
+  
   useEffect(() => {
     playWinnerSound();
     
@@ -124,19 +123,14 @@ const WinnerAnnouncement = ({ winner, onClose }: WinnerAnnouncementProps) => {
             <div className="text-lg font-bold text-card-foreground">
               🎁 You've won an
             </div>
-            <div className="text-2xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <div className="text-2xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               iPhone 17 Pro
             </div>
           </div>
 
-          {/* Close button */}
-          <Button
-            onClick={onClose}
-            variant="outline"
-            className="w-full border-primary/50 hover:bg-primary/10"
-          >
-            Awesome! 🎉
-          </Button>
+          <p className="text-xs text-muted-foreground italic">
+            This dialog will close automatically...
+          </p>
         </div>
       </Card>
     </div>

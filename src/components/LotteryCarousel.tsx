@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { User } from '@/types/user';
 import UserCard from './UserCard';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useCasinoSounds } from '@/hooks/useCasinoSounds';
 
@@ -9,14 +8,34 @@ interface LotteryCarouselProps {
   users: User[];
   onSpinComplete: (winner: User) => void;
   isSpinning: boolean;
-  onStartSpin: () => void;
 }
 
-const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: LotteryCarouselProps) => {
+const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [spinCount, setSpinCount] = useState(0);
   const { playSpinSound, stopSpinSound } = useCasinoSounds();
+  const backgroundIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const spinIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Continuous background rotation
+  useEffect(() => {
+    if (users.length === 0) return;
+
+    // Slow background rotation (every 2 seconds)
+    backgroundIntervalRef.current = setInterval(() => {
+      if (!isSpinning) {
+        setCurrentIndex(prev => (prev + 1) % users.length);
+      }
+    }, 2000);
+
+    return () => {
+      if (backgroundIntervalRef.current) {
+        clearInterval(backgroundIntervalRef.current);
+      }
+    };
+  }, [users.length, isSpinning]);
+
+  // Fast spin animation when triggered
   useEffect(() => {
     if (!isSpinning) {
       stopSpinSound();
@@ -27,14 +46,14 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
     const maxSpins = 15 + Math.floor(Math.random() * 10); // 15-25 spins
     let count = 0;
 
-    const spinInterval = setInterval(() => {
+    spinIntervalRef.current = setInterval(() => {
       count++;
       setSpinCount(count);
       
       if (count <= maxSpins) {
         setCurrentIndex(prev => (prev + 1) % users.length);
       } else {
-        clearInterval(spinInterval);
+        if (spinIntervalRef.current) clearInterval(spinIntervalRef.current);
         // Select random winner
         const winnerIndex = Math.floor(Math.random() * users.length);
         setCurrentIndex(winnerIndex);
@@ -49,7 +68,9 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
     }, 100 + Math.floor(count / 3) * 50); // Gradually slow down
 
     return () => {
-      clearInterval(spinInterval);
+      if (spinIntervalRef.current) {
+        clearInterval(spinIntervalRef.current);
+      }
       stopSpinSound();
     };
   }, [isSpinning, users, onSpinComplete, playSpinSound, stopSpinSound]);
@@ -79,12 +100,12 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Carousel Display */}
       <div className="relative overflow-hidden">
-        <div className="text-center mb-4">
+        <div className="text-center mb-3">
           <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            {isSpinning ? 'Spinning...' : 'Next Lucky Winner'}
+            {isSpinning ? 'Spinning...' : 'All Participants'}
           </h2>
           <p className="text-muted-foreground text-sm">
             {users.length} participant{users.length !== 1 ? 's' : ''} remaining
@@ -94,11 +115,11 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
         <div className="relative overflow-hidden mx-auto max-w-6xl">
           <div 
             className={cn(
-              "flex space-x-4 transition-transform duration-300 ease-out px-8",
-              isSpinning && "animate-pulse"
+              "flex space-x-4 transition-transform ease-linear px-8",
+              isSpinning ? "duration-100" : "duration-[2000ms]"
             )}
             style={{
-              transform: isSpinning ? `translateX(-${(currentIndex * 200)}px)` : 'translateX(0px)'
+              transform: `translateX(-${(currentIndex * 200)}px)`
             }}
           >
             {getDisplayUsers().map((user, index) => {
@@ -128,8 +149,8 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
           </div>
           
           {/* Fade edges */}
-          <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent pointer-events-none" />
-          <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent pointer-events-none" />
         </div>
 
         {isSpinning && (
@@ -137,31 +158,6 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning, onStartSpin }: Lot
             <div className="text-4xl opacity-20 animate-spin">⟳</div>
           </div>
         )}
-      </div>
-
-      {/* Manual Spin Button */}
-      <div className="text-center">
-        <Button
-          onClick={onStartSpin}
-          disabled={isSpinning || users.length === 0}
-          size="lg"
-          className={cn(
-            "bg-gradient-to-r from-primary to-secondary",
-            "hover:from-primary/90 hover:to-secondary/90",
-            "text-white font-bold px-8 py-4 text-lg",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            "transition-all duration-300 hover:scale-105"
-          )}
-        >
-          {isSpinning ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-              Spinning...
-            </>
-          ) : (
-            '⚡ Spin Now!'
-          )}
-        </Button>
       </div>
     </div>
   );
