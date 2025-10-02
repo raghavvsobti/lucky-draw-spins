@@ -14,7 +14,6 @@ interface LotteryCarouselProps {
 const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselProps) => {
   const [spinCount, setSpinCount] = useState(0);
   const { playSpinSound, stopSpinSound } = useCasinoSounds();
-  const spinIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fast spin animation when triggered
   useEffect(() => {
@@ -78,7 +77,7 @@ const LotteryCarousel = ({ users, onSpinComplete, isSpinning }: LotteryCarouselP
                 repeat: Infinity,
                 repeatType: "loop",
                 duration: isSpinning ? users.length * 0.1 : users.length * 2,
-                ease: "linear"
+                ease: "linear",
               }
             }}
           >

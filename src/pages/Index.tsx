@@ -142,11 +142,8 @@ const Index = () => {
 
         {/* Registration QR Code */}
         <section className="absolute bottom-0 right-10 max-w-screen pb-4">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20">
-            <div className="flex items-center justify-center gap-6">
-              <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center text-white font-bold text-xs">
-                <QRCodeCanvas value="https://reactjs.org/" className='p-2' />
-              </div>
+          <Card className="p-12 bg-card/50 backdrop-blur-sm border-primary/20">
+            <div className="flex items-center space-x-6 justify-center gap-6">
               <div className="text-center">
                 <p className="text-sm font-semibold text-card-foreground">
                   Want to participate?
@@ -154,6 +151,9 @@ const Index = () => {
                 <p className="text-xs text-muted-foreground">
                   Scan now to register for the next lucky draw
                 </p>
+              </div>
+              <div className="w-24 h-24 bg-gradient-to-br from-primary animate-pulse to-secondary rounded-lg flex items-center justify-center text-white font-bold text-xs">
+                <QRCodeCanvas value="https://reactjs.org/" className='p-2' size={170} />
               </div>
             </div>
           </Card>
